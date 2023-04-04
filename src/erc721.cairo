@@ -1,6 +1,7 @@
 #[contract]
 mod ERC721 {
     use starknet::ContractAddress;
+    use starknet::ContractAddressIntoFelt252;
     use starknet::ContractAddressZeroable;
 
     use traits::Into;
@@ -51,11 +52,16 @@ mod ERC721 {
         owners::read(token_id)
     }
 
-    // #[external]
-    // fn set_approval_for_all(operator: ContractAddress, approved: bool) {
-    //     let caller = starknet::get_caller_address();
-    //     _set_approval_for_all(caller, operator, approved);
-    // }
+    #[external]
+    fn set_approval_for_all(operator: ContractAddress, approved: bool) {
+        let caller = starknet::get_caller_address();
+
+        assert(caller.into() * operator.into() != 0, 'ERC721: zero caller or operator');
+        assert(caller != operator, 'ERC721: approval to owner');
+
+        operator_approvals::write((caller, operator), bool::True(()));
+        ApprovalForAll(caller, operator, approved);
+    }
 
     // fn _set_approval_for_all(owner: ContractAddress, operator: ContractAddress, approved: bool) {
     //     // ContractAddress equation is not supported so into() is used here

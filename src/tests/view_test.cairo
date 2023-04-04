@@ -1,7 +1,9 @@
 // Library imports
 use option::OptionTrait;
 use traits::Into;
-use starknet::contract_address_try_from_felt252;
+use traits::TryInto;
+use starknet::ContractAddress;
+use starknet::Felt252TryIntoContractAddress;
 
 // Internal imports
 use two_words::ERC721::ERC721;
@@ -35,7 +37,7 @@ fn test_contract_view__balance_of() {
     // Given
     deploy_erc721();
 
-    let owner = contract_address_try_from_felt252(OWNER).unwrap();
+    let owner: ContractAddress = OWNER.try_into().unwrap();
     let balance: u256 = BALANCE.into();
     ERC721::balances::write(owner, balance);
 
@@ -52,7 +54,7 @@ fn test_contract_view__owner_of() {
     // Given
     deploy_erc721();
 
-    let owner = contract_address_try_from_felt252(OWNER).unwrap();
+    let owner = OWNER.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
     ERC721::owners::write(token_id, owner);
 
