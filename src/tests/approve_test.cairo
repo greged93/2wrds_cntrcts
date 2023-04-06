@@ -9,28 +9,21 @@ use starknet::Felt252TryIntoContractAddress;
 // Internal imports
 use two_words::ERC721::ERC721;
 use two_words::tests::helpers::deploy_erc721;
+use two_words::tests::helpers::set_token_owner;
 use two_words::tests::asserts::assert_eq;
 use two_words::tests::helpers::set_caller_address;
 
 use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
+
 use two_words::tests::constants_test::CALLER_ADDRESS;
 use two_words::tests::constants_test::DESTINATION;
 use two_words::tests::constants_test::OPERATOR;
 use two_words::tests::constants_test::OWNER;
+
 use two_words::tests::constants_test::ZERO;
+
 use two_words::tests::constants_test::TOKEN_ID;
-
-#[test]
-#[available_gas(2000000)]
-fn test_constructor() {
-    // Given
-    deploy_erc721();
-
-    // Then
-    assert_eq(ERC721::name(), CONTRACT_NAME, 'incorrect name');
-    assert_eq(ERC721::symbol(), TOKEN_SYMBOL, 'incorrect symbol');
-}
 
 #[test]
 #[available_gas(2000000)]
@@ -52,12 +45,11 @@ fn test_approve__should_panic_with_zero_address() {
 fn test_approve__should_panic_with_approval_to_owner() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
+    set_token_owner(DESTINATION, TOKEN_ID);
 
     let destination = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
-
-    ERC721::owners::write(token_id, destination);
 
     // When
     ERC721::approve(destination, token_id);
@@ -69,7 +61,7 @@ fn test_approve__should_panic_with_approval_to_owner() {
 fn test_approve__should_panic_with_caller_cannot_approve_caller_not_approved() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
 
     let caller: ContractAddress = CALLER_ADDRESS.try_into().unwrap();
     let destination: ContractAddress = DESTINATION.try_into().unwrap();
@@ -84,13 +76,11 @@ fn test_approve__should_panic_with_caller_cannot_approve_caller_not_approved() {
 fn test_approve__should_approve_owner() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
+    set_token_owner(CALLER_ADDRESS, TOKEN_ID);
 
-    let caller = CALLER_ADDRESS.try_into().unwrap();
     let destination = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
-
-    ERC721::owners::write(token_id, caller);
 
     // When
     ERC721::approve(destination, token_id);
@@ -101,15 +91,15 @@ fn test_approve__should_approve_owner() {
 fn test_approve__should_approve_approved_for_all() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
+    set_token_owner(OWNER, TOKEN_ID);
 
     let caller = CALLER_ADDRESS.try_into().unwrap();
     let owner = OWNER.try_into().unwrap();
     let destination = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
 
-    ERC721::owners::write(token_id, owner);
-    ERC721::operator_approvals::write((owner, caller), bool::True(()));
+    ERC721::erc721_operator_approvals::write((owner, caller), bool::True(()));
 
     // When
     ERC721::approve(destination, token_id);
@@ -135,7 +125,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
 fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
 
     let operator = ZERO.try_into().unwrap();
 
@@ -148,7 +138,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
 fn test_set_approval_for_all() {
     // Given
     deploy_erc721();
-    set_caller_address();
+    set_caller_address(CALLER_ADDRESS);
 
     let caller: ContractAddress = CALLER_ADDRESS.try_into().unwrap();
     let operator = OPERATOR.try_into().unwrap();
@@ -157,6 +147,6 @@ fn test_set_approval_for_all() {
     ERC721::set_approval_for_all(operator, bool::True(()));
 
     // Then
-    let approval = ERC721::operator_approvals::read((caller, operator));
+    let approval = ERC721::erc721_operator_approvals::read((caller, operator));
     assert(approval, 'operator should be approved');
 }
