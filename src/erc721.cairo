@@ -1,6 +1,16 @@
+use starknet::ContractAddress;
+
+#[abi]
+trait IERC20 {
+    fn transferFrom(sender: ContractAddress, recipient: ContractAddress, amount: u256);
+}
+
 #[contract]
 mod ERC721 {
     use two_words::error_codes::ErrorCodes;
+    use two_words::constants::MINT_PRICE;
+    use two_words::ERC721::IERC20Dispatcher;
+    use two_words::ERC721::IERC20DispatcherTrait;
 
     use starknet::ContractAddress;
     use starknet::contract_address_const;
@@ -19,6 +29,8 @@ mod ERC721 {
     struct Storage {
         erc721_name: felt252,
         erc721_symbol: felt252,
+        erc721_contract_owner: ContractAddress,
+        erc721_eth_address: ContractAddress,
         erc721_token_uri: LegacyMap::<u256, felt252>,
         erc721_owners: LegacyMap::<u256, ContractAddress>,
         erc721_balances: LegacyMap::<ContractAddress, u256>,
@@ -37,9 +49,16 @@ mod ERC721 {
     fn ApprovalForAll(owner: ContractAddress, operator: ContractAddress, approved: bool) {}
 
     #[constructor]
-    fn constructor(_name: felt252, _symbol: felt252) {
-        erc721_name::write(_name);
-        erc721_symbol::write(_symbol);
+    fn constructor(
+        name: felt252, symbol: felt252, owner: ContractAddress, eth_address: ContractAddress
+    ) {
+        assert(!owner.is_zero(), ErrorCodes::ZERO_CALLER);
+        assert(!eth_address.is_zero(), ErrorCodes::ZERO_CALLER);
+
+        erc721_name::write(name);
+        erc721_symbol::write(symbol);
+        erc721_contract_owner::write(owner);
+        erc721_eth_address::write(eth_address);
     }
 
     #[view]

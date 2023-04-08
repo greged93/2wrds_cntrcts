@@ -10,7 +10,9 @@ use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
 
 fn deploy_erc721() {
-    ERC721::constructor(CONTRACT_NAME, TOKEN_SYMBOL);
+    let owner = 1.try_into().unwrap();
+    let eth_address = 1.try_into().unwrap();
+    ERC721::constructor(CONTRACT_NAME, TOKEN_SYMBOL, owner, eth_address);
 }
 
 fn set_caller_address(address: felt252) {
