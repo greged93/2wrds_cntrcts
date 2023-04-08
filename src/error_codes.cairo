@@ -1,6 +1,7 @@
 mod ErrorCodes {
     // Token related errors
     const NON_EXISTENT_TOKEN: felt252 = 'ERC721: nonexistent token';
+    const TOKEN_ALREADY_MINTED: felt252 = 'ERC721: token already minted';
 
     // Account related errors
     const ZERO_CALLER: felt252 = 'ERC721: zero address caller';

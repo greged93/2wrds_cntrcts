@@ -26,6 +26,37 @@ use two_words::tests::constants_test::TOKEN_ID;
 
 #[test]
 #[available_gas(2000000)]
+#[should_panic]
+fn test_mint__should_panic_with_zero_address() {
+    // Given 
+    deploy_erc721();
+    set_caller_address(CALLER);
+
+    let destination = ZERO.try_into().unwrap();
+    let token_id = TOKEN_ID.into();
+
+    // When
+    ERC721::mint(destination, token_id);
+}
+
+#[test]
+#[available_gas(2000000)]
+#[should_panic]
+fn test_mint__should_panic_with_token_exists() {
+    // Given 
+    deploy_erc721();
+    set_caller_address(CALLER);
+
+    let destination = DESTINATION.try_into().unwrap();
+    let token_id = TOKEN_ID.into();
+    ERC721::mint(destination, token_id);
+
+    // When
+    ERC721::mint(destination, token_id);
+}
+
+#[test]
+#[available_gas(2000000)]
 fn test_mint() {
     // Given 
     deploy_erc721();

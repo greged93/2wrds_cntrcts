@@ -135,21 +135,15 @@ mod ERC721 {
         is_spender_owner | is_spender_approved | is_spender_approved_for_all
     }
 
-    fn mint(to: ContractAddress, token_id: u256) {}
+    fn mint(to: ContractAddress, token_id: u256) {
+        assert(!to.is_zero(), ErrorCodes::ZERO_DESTINATION);
+        assert(!exists(token_id), ErrorCodes::TOKEN_ALREADY_MINTED);
 
-    // fn mint(to: ContractAddress, token_id: u256) {
-    //     assert(!to.is_zero(), 'ERC721: mint to 0');
-    //     assert(!_exists(token_id), 'ERC721: already minted');
-    //     _beforeTokenTransfer(contract_address_const::<0>(), to, token_id, 1.into());
-    //     assert(!_exists(token_id), 'ERC721: already minted');
+        erc721_balances::write(to, erc721_balances::read(to) + 1.into());
+        erc721_owners::write(token_id, to);
 
-    //     balances::write(to, balances::read(to) + 1.into());
-    //     owners::write(token_id, to);
-    //     // contract_address_const::<0>() => means 0 address
-    //     Transfer(contract_address_const::<0>(), to, token_id);
-
-    //     _afterTokenTransfer(contract_address_const::<0>(), to, token_id, 1.into());
-    // }
+        Transfer(contract_address_const::<0>(), to, token_id);
+    }
 
     fn _transfer(from: ContractAddress, to: ContractAddress, token_id: u256) {
         let owner = owner_of(token_id);
