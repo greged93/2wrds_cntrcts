@@ -107,7 +107,6 @@ mod ERC721 {
     fn set_approval_for_all(operator: ContractAddress, approved: bool) {
         let caller = starknet::get_caller_address();
 
-        // TODO split in two
         assert(!caller.is_zero(), ErrorCodes::ZERO_CALLER);
         assert(!operator.is_zero(), ErrorCodes::ZERO_OPERATOR);
         assert(caller != operator, ErrorCodes::APPROVAL_TO_SELF);
@@ -116,21 +115,29 @@ mod ERC721 {
         ApprovalForAll(caller, operator, approved);
     }
 
-    // #[external]
-    // fn transfer_from(from: ContractAddress, to: ContractAddress, token_id: u256) {
-    //     let caller = starknet::get_caller_address();
-    //     let owner = owners::read(token_id);
+    #[external]
+    fn transfer_from(from: ContractAddress, to: ContractAddress, token_id: u256) {
+        let caller = starknet::get_caller_address();
+        let owner = erc721_owners::read(token_id);
 
-    //     let is_owner = caller == owner;
-    //     let is_approved = token_approvals::read(token_id) == caller;
-    //     assert(is_owner | is_approved, 'ERC721: caller not approved');
-    //     _transfer(from, to, token_id);
-    // }
-    // fn _exists(token_id: u256) -> bool {
-    //     !_owner_of(token_id).is_zero()
-    // }
+        assert(is_owner_or_approved(caller, token_id), ErrorCodes::CALLER_NOT_APPROVED);
 
-    // fn _mint(to: ContractAddress, token_id: u256) {
+        _transfer(from, to, token_id);
+    }
+
+    fn is_owner_or_approved(spender: ContractAddress, token_id: u256) -> bool {
+        let owner = erc721_owners::read(token_id);
+
+        let is_spender_owner = spender == owner;
+        let is_spender_approved = erc721_token_approvals::read(token_id) == spender;
+        let is_spender_approved_for_all = erc721_operator_approvals::read((owner, spender));
+
+        is_spender_owner | is_spender_approved | is_spender_approved_for_all
+    }
+
+    fn mint(to: ContractAddress, token_id: u256) {}
+
+    // fn mint(to: ContractAddress, token_id: u256) {
     //     assert(!to.is_zero(), 'ERC721: mint to 0');
     //     assert(!_exists(token_id), 'ERC721: already minted');
     //     _beforeTokenTransfer(contract_address_const::<0>(), to, token_id, 1.into());
@@ -142,31 +149,6 @@ mod ERC721 {
     //     Transfer(contract_address_const::<0>(), to, token_id);
 
     //     _afterTokenTransfer(contract_address_const::<0>(), to, token_id, 1.into());
-    // }
-
-    // fn _burn(token_id: u256) {
-    //     let owner = owner_of(token_id);
-    //     _beforeTokenTransfer(owner, contract_address_const::<0>(), token_id, 1.into());
-    //     let owner = owner_of(token_id);
-    //     token_approvals::write(token_id, contract_address_const::<0>());
-
-    //     balances::write(owner, balances::read(owner) - 1.into());
-    //     owners::write(token_id, contract_address_const::<0>());
-    //     Transfer(owner, contract_address_const::<0>(), token_id);
-
-    //     _afterTokenTransfer(owner, contract_address_const::<0>(), token_id, 1.into());
-    // }
-
-    // fn _require_minted(token_id: u256) {
-    //     assert(_exists(token_id), 'ERC721: invalid token ID');
-    // }
-
-    // fn _is_approved_or_owner(spender: ContractAddress, token_id: u256) -> bool {
-    //     let owner = owners::read(token_id);
-    //     // || is not supported currently so we use | here
-    //     spender.into() == owner.into() | is_approved_for_all(
-    //         owner, spender
-    //     ) | get_approved(token_id).into() == spender.into()
     // }
 
     fn _transfer(from: ContractAddress, to: ContractAddress, token_id: u256) {
@@ -186,26 +168,6 @@ mod ERC721 {
         erc721_owners::write(token_id, to);
         Transfer(from, to, token_id);
     }
-
-    // fn _transfer(from: ContractAddress, to: ContractAddress, token_id: u256) {
-    //     let owner = owner_of(token_id);
-    //     assert(from == owner, 'ERC721: Transfer from incorrect owner');
-    //     assert(!to.is_zero(), 'ERC721: transfer to 0');
-
-    //     _beforeTokenTransfer(from, to, token_id, 1.into());
-    //     assert(from.into() == owner_of(token_id).into(), 'Transfer from incorrect owner');
-
-    //     token_approvals::write(token_id, contract_address_const::<0>());
-
-    //     balances::write(from, balances::read(from) - 1.into());
-    //     balances::write(to, balances::read(to) + 1.into());
-
-    //     owners::write(token_id, to);
-
-    //     Transfer(from, to, token_id);
-
-    //     _afterTokenTransfer(from, to, token_id, 1.into());
-    // }
 
     fn exists(token_id: u256) -> bool {
         let _exists = erc721_owners::read(token_id);
