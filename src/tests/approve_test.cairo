@@ -16,7 +16,7 @@ use two_words::tests::helpers::set_caller_address;
 use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
 
-use two_words::tests::constants_test::CALLER_ADDRESS;
+use two_words::tests::constants_test::CALLER;
 use two_words::tests::constants_test::DESTINATION;
 use two_words::tests::constants_test::OPERATOR;
 use two_words::tests::constants_test::OWNER;
@@ -45,7 +45,7 @@ fn test_approve__should_panic_with_zero_address() {
 fn test_approve__should_panic_with_approval_to_owner() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
+    set_caller_address(CALLER);
     set_token_owner(DESTINATION, TOKEN_ID);
 
     let destination = DESTINATION.try_into().unwrap();
@@ -61,9 +61,9 @@ fn test_approve__should_panic_with_approval_to_owner() {
 fn test_approve__should_panic_with_caller_cannot_approve_caller_not_approved() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
+    set_caller_address(CALLER);
 
-    let caller: ContractAddress = CALLER_ADDRESS.try_into().unwrap();
+    let caller: ContractAddress = CALLER.try_into().unwrap();
     let destination: ContractAddress = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
 
@@ -76,8 +76,8 @@ fn test_approve__should_panic_with_caller_cannot_approve_caller_not_approved() {
 fn test_approve__should_approve_owner() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
-    set_token_owner(CALLER_ADDRESS, TOKEN_ID);
+    set_caller_address(CALLER);
+    set_token_owner(CALLER, TOKEN_ID);
 
     let destination = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
@@ -91,10 +91,10 @@ fn test_approve__should_approve_owner() {
 fn test_approve__should_approve_approved_for_all() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
+    set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
-    let caller = CALLER_ADDRESS.try_into().unwrap();
+    let caller = CALLER.try_into().unwrap();
     let owner = OWNER.try_into().unwrap();
     let destination = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
@@ -112,7 +112,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
     // Given
     deploy_erc721();
 
-    let caller: ContractAddress = CALLER_ADDRESS.try_into().unwrap();
+    let caller: ContractAddress = CALLER.try_into().unwrap();
     let operator = DESTINATION.try_into().unwrap();
 
     // When
@@ -125,7 +125,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
 fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
+    set_caller_address(CALLER);
 
     let operator = ZERO.try_into().unwrap();
 
@@ -138,9 +138,9 @@ fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
 fn test_set_approval_for_all() {
     // Given
     deploy_erc721();
-    set_caller_address(CALLER_ADDRESS);
+    set_caller_address(CALLER);
 
-    let caller: ContractAddress = CALLER_ADDRESS.try_into().unwrap();
+    let caller: ContractAddress = CALLER.try_into().unwrap();
     let operator = OPERATOR.try_into().unwrap();
 
     // When

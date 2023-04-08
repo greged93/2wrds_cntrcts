@@ -9,9 +9,6 @@ use two_words::ERC721::ERC721;
 use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
 
-use two_words::tests::constants_test::CALLER_ADDRESS;
-use two_words::tests::constants_test::OWNER;
-
 fn deploy_erc721() {
     ERC721::constructor(CONTRACT_NAME, TOKEN_SYMBOL);
 }
