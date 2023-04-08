@@ -7,10 +7,11 @@ trait IERC20 {
 
 #[contract]
 mod ERC721 {
-    use two_words::error_codes::ErrorCodes;
     use two_words::constants::MINT_PRICE;
     use two_words::ERC721::IERC20Dispatcher;
     use two_words::ERC721::IERC20DispatcherTrait;
+    use two_words::error_codes::ErrorCodes;
+    use two_words::types::NounAdj;
 
     use starknet::ContractAddress;
     use starknet::contract_address_const;
@@ -31,6 +32,11 @@ mod ERC721 {
         erc721_symbol: felt252,
         erc721_contract_owner: ContractAddress,
         erc721_eth_address: ContractAddress,
+        //
+        erc721_mint_id: u256,
+        erc721_supply: u256,
+        //
+        erc721_token_metadata: LegacyMap::<u256, NounAdj>,
         erc721_token_uri: LegacyMap::<u256, felt252>,
         erc721_owners: LegacyMap::<u256, ContractAddress>,
         erc721_balances: LegacyMap::<ContractAddress, u256>,
@@ -50,13 +56,18 @@ mod ERC721 {
 
     #[constructor]
     fn constructor(
-        name: felt252, symbol: felt252, owner: ContractAddress, eth_address: ContractAddress
+        name: felt252,
+        symbol: felt252,
+        supply: u256,
+        owner: ContractAddress,
+        eth_address: ContractAddress
     ) {
         assert(!owner.is_zero(), ErrorCodes::ZERO_CALLER);
         assert(!eth_address.is_zero(), ErrorCodes::ZERO_CALLER);
 
         erc721_name::write(name);
         erc721_symbol::write(symbol);
+        erc721_supply::write(supply);
         erc721_contract_owner::write(owner);
         erc721_eth_address::write(eth_address);
     }
@@ -154,16 +165,6 @@ mod ERC721 {
         is_spender_owner | is_spender_approved | is_spender_approved_for_all
     }
 
-    fn mint(to: ContractAddress, token_id: u256) {
-        assert(!to.is_zero(), ErrorCodes::ZERO_DESTINATION);
-        assert(!exists(token_id), ErrorCodes::TOKEN_ALREADY_MINTED);
-
-        erc721_balances::write(to, erc721_balances::read(to) + 1.into());
-        erc721_owners::write(token_id, to);
-
-        Transfer(contract_address_const::<0>(), to, token_id);
-    }
-
     fn _transfer(from: ContractAddress, to: ContractAddress, token_id: u256) {
         let owner = owner_of(token_id);
         assert(owner == from, ErrorCodes::INCORRECT_OWNER);
@@ -180,6 +181,32 @@ mod ERC721 {
 
         erc721_owners::write(token_id, to);
         Transfer(from, to, token_id);
+    }
+
+    fn mint(to: ContractAddress) {
+        assert(!to.is_zero(), ErrorCodes::ZERO_DESTINATION);
+        let token_id = erc721_mint_id::read() + 1.into();
+        assert(token_id <= erc721_supply::read(), ErrorCodes::SUPPLY_EXCEEDED);
+
+        transfer_mint_fee();
+
+        erc721_balances::write(to, erc721_balances::read(to) + 1.into());
+        erc721_owners::write(token_id, to);
+        erc721_mint_id::write(token_id);
+
+        Transfer(contract_address_const::<0>(), to, token_id);
+    }
+
+    fn transfer_mint_fee() {
+        return ();
+    // Uncomment to enable minting fee
+    // let eth_address = erc721_eth_address::read();
+    // let amount: u256 = MINT_PRICE.into();
+    // let caller = starknet::get_caller_address();
+    // let contract_owner = erc721_contract_owner::read();
+    // IERC20Dispatcher {
+    //     contract_address: eth_address
+    // }.transferFrom(caller, contract_owner, amount);
     }
 
     fn exists(token_id: u256) -> bool {

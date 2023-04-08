@@ -8,11 +8,12 @@ use starknet::Felt252TryIntoContractAddress;
 use two_words::ERC721::ERC721;
 use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
+use two_words::tests::constants_test::SUPPLY;
 
 fn deploy_erc721() {
     let owner = 1.try_into().unwrap();
     let eth_address = 1.try_into().unwrap();
-    ERC721::constructor(CONTRACT_NAME, TOKEN_SYMBOL, owner, eth_address);
+    ERC721::constructor(CONTRACT_NAME, TOKEN_SYMBOL, SUPPLY.into(), owner, eth_address);
 }
 
 fn set_caller_address(address: felt252) {

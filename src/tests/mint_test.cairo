@@ -23,6 +23,7 @@ use two_words::tests::constants_test::ZERO;
 use two_words::tests::constants_test::ONE;
 
 use two_words::tests::constants_test::TOKEN_ID;
+use two_words::tests::constants_test::SUPPLY;
 
 #[test]
 #[available_gas(2000000)]
@@ -33,26 +34,26 @@ fn test_mint__should_panic_with_zero_address() {
     set_caller_address(CALLER);
 
     let destination = ZERO.try_into().unwrap();
-    let token_id = TOKEN_ID.into();
 
     // When
-    ERC721::mint(destination, token_id);
+    ERC721::mint(destination);
 }
 
 #[test]
 #[available_gas(2000000)]
 #[should_panic]
-fn test_mint__should_panic_with_token_exists() {
+fn test_mint__should_panic_with_max_supply() {
     // Given 
     deploy_erc721();
     set_caller_address(CALLER);
 
+    ERC721::erc721_mint_id::write(SUPPLY.into());
+    ERC721::erc721_supply::write(SUPPLY.into());
+
     let destination = DESTINATION.try_into().unwrap();
-    let token_id = TOKEN_ID.into();
-    ERC721::mint(destination, token_id);
 
     // When
-    ERC721::mint(destination, token_id);
+    ERC721::mint(destination);
 }
 
 #[test]
@@ -63,15 +64,18 @@ fn test_mint() {
     set_caller_address(CALLER);
 
     let destination = DESTINATION.try_into().unwrap();
-    let token_id = TOKEN_ID.into();
+    ERC721::erc721_mint_id::write((SUPPLY - ONE).into());
+    ERC721::erc721_supply::write(SUPPLY.into());
 
     // When
-    ERC721::mint(destination, token_id);
+    ERC721::mint(destination);
 
     // Then
-    let owner = ERC721::erc721_owners::read(token_id);
+    let owner = ERC721::erc721_owners::read(SUPPLY.into());
     let balance = ERC721::erc721_balances::read(destination);
+    let current_mint_id = ERC721::erc721_mint_id::read();
 
     assert_eq(owner, destination, 'incorrect owner');
     assert_eq(balance, 1.into(), 'incorrect balance');
+    assert_eq(current_mint_id, SUPPLY.into(), 'incorrect token id');
 }
