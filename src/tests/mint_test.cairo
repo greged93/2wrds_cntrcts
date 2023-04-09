@@ -58,7 +58,7 @@ fn test_mint__should_panic_with_max_supply() {
 
 #[test]
 #[available_gas(2000000)]
-fn test_mint() {
+fn test_mint__should_update_balances() {
     // Given 
     deploy_erc721();
     set_caller_address(CALLER);
@@ -78,4 +78,23 @@ fn test_mint() {
     assert_eq(owner, destination, 'incorrect owner');
     assert_eq(balance, 1.into(), 'incorrect balance');
     assert_eq(current_mint_id, SUPPLY.into(), 'incorrect token id');
+}
+
+#[test]
+#[available_gas(2000000)]
+fn test_mint__should_update_metadata() {
+    // Given 
+    deploy_erc721();
+    set_caller_address(CALLER);
+
+    let destination = DESTINATION.try_into().unwrap();
+
+    // When
+    ERC721::mint(destination);
+
+    // Then
+    let metadata = ERC721::erc721_token_metadata::read(ONE.into());
+
+    assert_eq(metadata.noun, 'noun', 'incorrect metadata for noun');
+    assert_eq(metadata.adj, 'adj', 'incorrect metadata for adj');
 }

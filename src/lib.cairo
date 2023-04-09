@@ -4,6 +4,8 @@ mod constants;
 
 mod error_codes;
 
+mod randomizer;
+
 mod tests;
 
 mod types;

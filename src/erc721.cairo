@@ -1,3 +1,5 @@
+use two_words::types::NounAdj;
+
 use starknet::ContractAddress;
 
 #[abi]
@@ -12,6 +14,7 @@ mod ERC721 {
     use two_words::ERC721::IERC20DispatcherTrait;
     use two_words::error_codes::ErrorCodes;
     use two_words::types::NounAdj;
+    use two_words::randomizer::Randomizer;
 
     use starknet::ContractAddress;
     use starknet::contract_address_const;
@@ -189,6 +192,7 @@ mod ERC721 {
         assert(token_id <= erc721_supply::read(), ErrorCodes::SUPPLY_EXCEEDED);
 
         transfer_mint_fee();
+        set_token_metadata(token_id);
 
         erc721_balances::write(to, erc721_balances::read(to) + 1.into());
         erc721_owners::write(token_id, to);
@@ -207,6 +211,11 @@ mod ERC721 {
     // IERC20Dispatcher {
     //     contract_address: eth_address
     // }.transferFrom(caller, contract_owner, amount);
+    }
+
+    fn set_token_metadata(token_id: u256) {
+        let noun_adj = Randomizer::get_random_noun_adj();
+        erc721_token_metadata::write(token_id, noun_adj);
     }
 
     fn exists(token_id: u256) -> bool {
