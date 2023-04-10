@@ -13,7 +13,7 @@ use two_words::tests::asserts::assert_eq;
 
 use two_words::tests::constants_test::CONTRACT_NAME;
 use two_words::tests::constants_test::TOKEN_SYMBOL;
-use two_words::tests::constants_test::SUPPLY;
+use two_words::tests::constants_test::TOKEN_SUPPLY;
 
 use two_words::tests::constants_test::CALLER;
 use two_words::tests::constants_test::ETH_ADDRESS;
@@ -30,7 +30,7 @@ fn test_constructor__should_panic_with_zero_address_owner() {
     let one = ONE.try_into().unwrap();
 
     // When
-    ERC721::constructor(TOKEN_SYMBOL, CONTRACT_NAME, SUPPLY.into(), zero, one);
+    ERC721::constructor(TOKEN_SYMBOL, CONTRACT_NAME, TOKEN_SUPPLY.into(), zero, one);
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_constructor__should_panic_with_zero_address_eth() {
     let zero = ZERO.try_into().unwrap();
 
     // When
-    ERC721::constructor(TOKEN_SYMBOL, CONTRACT_NAME, SUPPLY.into(), one, zero);
+    ERC721::constructor(TOKEN_SYMBOL, CONTRACT_NAME, TOKEN_SUPPLY.into(), one, zero);
 }
 
 #[test]
@@ -53,7 +53,9 @@ fn test_constructor() {
     let expected_eth_address = ETH_ADDRESS.try_into().unwrap();
 
     // When
-    ERC721::constructor(TOKEN_SYMBOL, CONTRACT_NAME, SUPPLY.into(), caller, expected_eth_address);
+    ERC721::constructor(
+        TOKEN_SYMBOL, CONTRACT_NAME, TOKEN_SUPPLY.into(), caller, expected_eth_address
+    );
 
     // Then
     let owner = ERC721::erc721_contract_owner::read();

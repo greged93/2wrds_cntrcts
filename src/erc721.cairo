@@ -94,13 +94,13 @@ mod ERC721 {
     #[view]
     fn owner_of(token_id: u256) -> ContractAddress {
         let owner = erc721_owners::read(token_id);
-        assert(!owner.is_zero(), ErrorCodes::NON_EXISTENT_TOKEN);
+        assert(!owner.is_zero(), ErrorCodes::TOKEN_NON_EXISTENT);
         owner
     }
 
     #[view]
     fn get_approved(token_id: u256) -> ContractAddress {
-        assert(exists(token_id), ErrorCodes::NON_EXISTENT_TOKEN);
+        assert(exists(token_id), ErrorCodes::TOKEN_NON_EXISTENT);
         erc721_token_approvals::read(token_id)
     }
 
@@ -111,7 +111,7 @@ mod ERC721 {
 
     #[view]
     fn token_uri(token_id: u256) -> felt252 {
-        assert(exists(token_id), ErrorCodes::NON_EXISTENT_TOKEN);
+        assert(exists(token_id), ErrorCodes::TOKEN_NON_EXISTENT);
         erc721_token_uri::read(token_id)
     }
 
@@ -189,7 +189,7 @@ mod ERC721 {
     fn mint(to: ContractAddress) {
         assert(!to.is_zero(), ErrorCodes::ZERO_DESTINATION);
         let token_id = erc721_mint_id::read() + 1.into();
-        assert(token_id <= erc721_supply::read(), ErrorCodes::SUPPLY_EXCEEDED);
+        assert(token_id <= erc721_supply::read(), ErrorCodes::TOKEN_SUPPLY_EXCEEDED);
 
         transfer_mint_fee();
         set_token_metadata(token_id);
