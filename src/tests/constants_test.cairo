@@ -11,6 +11,7 @@ const OWNER: felt252 = 0x10;
 const ZERO: felt252 = 0x0;
 const ONE: felt252 = 0x1;
 const TWENTY: felt252 = 0x14;
+const BIG: felt252 = 0x12345;
 
 const TOKEN_ID: felt252 = 0x1;
 const OTHER_TOKEN_ID: felt252 = 0x2;
