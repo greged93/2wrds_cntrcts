@@ -6,6 +6,7 @@ mod Randomizer {
     use array::ArrayTrait;
     use box::BoxTrait;
     use option::OptionTrait;
+    use hash::LegacyHashFelt252;
     use traits::TryInto;
 
     fn get_random_noun_adj() -> NounAdj {
@@ -13,6 +14,16 @@ mod Randomizer {
         let ts = block_info.block_timestamp;
         let ts = ts.try_into().unwrap();
         NounAdj { noun: get_random_noun(ts), adj: get_random_adj(ts),  }
+    }
+
+    fn get_random_hashed_noun_adj() -> NounAdj {
+        let block_info = get_block_info().unbox();
+        let ts = block_info.block_timestamp;
+        let ts = ts.try_into().unwrap();
+
+        let hash_noun = LegacyHashFelt252::hash(get_random_noun(ts), 1);
+        let hash_adj = LegacyHashFelt252::hash(get_random_adj(ts), 1);
+        NounAdj { noun: hash_noun, adj: hash_adj,  }
     }
 
     fn get_random_noun(index: u32) -> felt252 {
