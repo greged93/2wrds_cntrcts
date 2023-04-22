@@ -4,10 +4,10 @@ TEST_ENTRYPOINT = .
 
 
 test:
-	cairo-test --starknet -p $(TEST_ENTRYPOINT)
+	cairo-test --starknet $(TEST_ENTRYPOINT)
 
 test-filter:
-	cairo-test --starknet -p $(TEST_ENTRYPOINT) --filter $(filter)
+	cairo-test --starknet  $(TEST_ENTRYPOINT) --filter $(filter)
 
 format:
 	cairo-format -r .

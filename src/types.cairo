@@ -9,23 +9,13 @@ use starknet::storage_write_syscall;
 use starknet::storage_read_syscall;
 use starknet::storage_address_from_base_and_offset;
 
-#[derive(Drop)]
+#[derive(Drop, Serde)]
 struct NounAdj {
     noun: felt252,
     adj: felt252
 }
 
-impl NounAdjSerde of Serde::<NounAdj> {
-    fn serialize(ref serialized: Array<felt252>, input: NounAdj) {
-        serialized.append(input.noun);
-        serialized.append(input.adj);
-    }
-    fn deserialize(ref serialized: Span<felt252>) -> Option<NounAdj> {
-        Option::Some(NounAdj { noun: *serialized.pop_front()?, adj: *serialized.pop_front()? })
-    }
-}
-
-impl StorageAccessNounAdj of StorageAccess::<NounAdj> {
+impl StorageAccessNounAdj of StorageAccess<NounAdj> {
     fn read(address_domain: u32, base: StorageBaseAddress) -> SyscallResult<NounAdj> {
         Result::Ok(
             NounAdj {

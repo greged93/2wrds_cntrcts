@@ -19,7 +19,6 @@ mod ERC721 {
     use starknet::ContractAddress;
     use starknet::contract_address_const;
     use starknet::ContractAddressIntoFelt252;
-    use starknet::ContractAddressZeroable;
 
     use starknet::Felt252TryIntoContractAddress;
 
