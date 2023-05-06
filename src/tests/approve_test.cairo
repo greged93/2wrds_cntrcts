@@ -27,7 +27,7 @@ use two_words::tests::constants_test::TOKEN_ID;
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_approve__should_panic_with_zero_address() {
     // Given
     deploy_erc721();
@@ -41,7 +41,7 @@ fn test_approve__should_panic_with_zero_address() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: approval to owner', ))]
 fn test_approve__should_panic_with_approval_to_owner() {
     // Given
     deploy_erc721();
@@ -57,8 +57,8 @@ fn test_approve__should_panic_with_approval_to_owner() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
-fn test_approve__should_panic_with_caller_cannot_approve_caller_not_approved() {
+#[should_panic(expected: ('ERC721: caller not approved', ))]
+fn test_approve__should_panic_with_caller_not_approved() {
     // Given
     deploy_erc721();
     set_caller_address(CALLER);
@@ -107,7 +107,7 @@ fn test_approve__should_approve_approved_for_all() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
     // Given
     deploy_erc721();
@@ -121,7 +121,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address operator', ))]
 fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
     // Given
     deploy_erc721();

@@ -30,8 +30,8 @@ use two_words::tests::constants_test::TOKEN_SUPPLY;
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
-fn test_mint__should_panic_with_zero_address() {
+#[should_panic(expected: ('ERC721: zero address dest', ))]
+fn test_mint__should_panic_with_zero_address_destination() {
     // Given 
     deploy_erc721();
     set_caller_address(CALLER);
@@ -44,7 +44,7 @@ fn test_mint__should_panic_with_zero_address() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: reached max supply', ))]
 fn test_mint__should_panic_with_max_supply() {
     // Given 
     deploy_erc721();

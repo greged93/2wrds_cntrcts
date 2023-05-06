@@ -25,7 +25,7 @@ use two_words::tests::constants_test::TOKEN_ID;
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: incorrect owner', ))]
 fn test_transfer__should_panic_owner_not_from() {
     // Given
     deploy_erc721();
@@ -46,7 +46,7 @@ fn test_transfer__should_panic_owner_not_from() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address dest', ))]
 fn test_transfer__should_panic_to_zero_address() {
     // Given
     deploy_erc721();
@@ -117,7 +117,7 @@ fn test_transfer__should_transfer_token() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: caller not approved', ))]
 fn test_transfer_from__should_panic_owner_not_caller_or_approved() {
     // Given
     deploy_erc721();

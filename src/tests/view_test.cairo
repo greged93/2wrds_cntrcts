@@ -41,7 +41,7 @@ fn test_contract_view__contract_information() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: query for zero address', ))]
 fn test_contract_view__balance_of_should_panic_zero_address() {
     // Given
     deploy_erc721();
@@ -72,7 +72,7 @@ fn test_contract_view__balance_of() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: nonexistent token', ))]
 fn test_contract_view__owner_of_should_panic_zero_address() {
     // Given
     deploy_erc721();

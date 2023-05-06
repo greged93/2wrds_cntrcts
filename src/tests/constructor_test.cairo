@@ -23,7 +23,7 @@ use two_words::tests::constants_test::ONE;
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_constructor__should_panic_with_zero_address_owner() {
     // Given
     let zero = ZERO.try_into().unwrap();
@@ -35,7 +35,7 @@ fn test_constructor__should_panic_with_zero_address_owner() {
 
 #[test]
 #[available_gas(2000000)]
-#[should_panic]
+#[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_constructor__should_panic_with_zero_address_eth() {
     // Given
     let one = ONE.try_into().unwrap();
