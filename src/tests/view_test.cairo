@@ -28,7 +28,7 @@ use two_words::tests::constants_test::OTHER_TOKEN_ID;
 #[available_gas(2000000)]
 fn test_contract_view__contract_information() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     // When
     let name = ERC721::name();
@@ -44,7 +44,7 @@ fn test_contract_view__contract_information() {
 #[should_panic(expected: ('ERC721: query for zero address', ))]
 fn test_contract_view__balance_of_should_panic_zero_address() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     let zero: ContractAddress = ZERO.try_into().unwrap();
     let balance: u256 = BALANCE.into();
@@ -57,7 +57,7 @@ fn test_contract_view__balance_of_should_panic_zero_address() {
 #[available_gas(2000000)]
 fn test_contract_view__balance_of() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     let owner: ContractAddress = OWNER.try_into().unwrap();
     let balance: u256 = BALANCE.into();
@@ -75,7 +75,7 @@ fn test_contract_view__balance_of() {
 #[should_panic(expected: ('ERC721: nonexistent token', ))]
 fn test_contract_view__owner_of_should_panic_zero_address() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     let owner: ContractAddress = OWNER.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
@@ -88,7 +88,7 @@ fn test_contract_view__owner_of_should_panic_zero_address() {
 #[available_gas(2000000)]
 fn test_contract_view__owner_of() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_token_owner(OWNER, TOKEN_ID);
 
     let owner = OWNER.try_into().unwrap();
@@ -105,7 +105,7 @@ fn test_contract_view__owner_of() {
 #[available_gas(2000000)]
 fn test_contract__token_exists() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_token_owner(OWNER, TOKEN_ID);
 
     // When
@@ -121,7 +121,7 @@ fn test_contract__token_exists() {
 #[available_gas(2000000)]
 fn test_contract__get_approved() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_token_owner(OWNER, TOKEN_ID);
 
     let operator = OPERATOR.try_into().unwrap();
@@ -138,7 +138,7 @@ fn test_contract__get_approved() {
 #[available_gas(2000000)]
 fn test_contract__is_approved_for_all() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     let operator = OPERATOR.try_into().unwrap();
     let owner = OWNER.try_into().unwrap();
 
@@ -155,7 +155,7 @@ fn test_contract__is_approved_for_all() {
 #[available_gas(2000000)]
 fn test_contract__token_uri() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     let token_id = TOKEN_ID.into();
     let owner = OWNER.try_into().unwrap();
 

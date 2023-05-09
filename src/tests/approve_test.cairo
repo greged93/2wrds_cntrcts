@@ -30,7 +30,7 @@ use two_words::tests::constants_test::TOKEN_ID;
 #[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_approve__should_panic_with_zero_address() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     let destination: ContractAddress = DESTINATION.try_into().unwrap();
     let token_id: u256 = TOKEN_ID.into();
@@ -44,7 +44,7 @@ fn test_approve__should_panic_with_zero_address() {
 #[should_panic(expected: ('ERC721: approval to owner', ))]
 fn test_approve__should_panic_with_approval_to_owner() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(DESTINATION, TOKEN_ID);
 
@@ -60,7 +60,7 @@ fn test_approve__should_panic_with_approval_to_owner() {
 #[should_panic(expected: ('ERC721: caller not approved', ))]
 fn test_approve__should_panic_with_caller_not_approved() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
 
     let caller: ContractAddress = CALLER.try_into().unwrap();
@@ -75,7 +75,7 @@ fn test_approve__should_panic_with_caller_not_approved() {
 #[available_gas(2000000)]
 fn test_approve__should_approve_owner() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(CALLER, TOKEN_ID);
 
@@ -90,7 +90,7 @@ fn test_approve__should_approve_owner() {
 #[available_gas(2000000)]
 fn test_approve__should_approve_approved_for_all() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -110,7 +110,7 @@ fn test_approve__should_approve_approved_for_all() {
 #[should_panic(expected: ('ERC721: zero address caller', ))]
 fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
 
     let caller: ContractAddress = CALLER.try_into().unwrap();
     let operator = DESTINATION.try_into().unwrap();
@@ -124,7 +124,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_caller() {
 #[should_panic(expected: ('ERC721: zero address operator', ))]
 fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
 
     let operator = ZERO.try_into().unwrap();
@@ -137,7 +137,7 @@ fn test_set_approval_for_call__should_panic_with_zero_address_operator() {
 #[available_gas(2000000)]
 fn test_set_approval_for_all() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
 
     let caller: ContractAddress = CALLER.try_into().unwrap();

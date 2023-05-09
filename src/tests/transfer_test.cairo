@@ -28,7 +28,7 @@ use two_words::tests::constants_test::TOKEN_ID;
 #[should_panic(expected: ('ERC721: incorrect owner', ))]
 fn test_transfer__should_panic_owner_not_from() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -49,7 +49,7 @@ fn test_transfer__should_panic_owner_not_from() {
 #[should_panic(expected: ('ERC721: zero address dest', ))]
 fn test_transfer__should_panic_to_zero_address() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -67,7 +67,7 @@ fn test_transfer__should_panic_to_zero_address() {
 #[available_gas(2000000)]
 fn test_transfer__should_remove_approval() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(CALLER, TOKEN_ID);
 
@@ -92,7 +92,7 @@ fn test_transfer__should_remove_approval() {
 #[available_gas(2000000)]
 fn test_transfer__should_transfer_token() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(CALLER, TOKEN_ID);
 
@@ -120,7 +120,7 @@ fn test_transfer__should_transfer_token() {
 #[should_panic(expected: ('ERC721: caller not approved', ))]
 fn test_transfer_from__should_panic_owner_not_caller_or_approved() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -138,7 +138,7 @@ fn test_transfer_from__should_panic_owner_not_caller_or_approved() {
 #[available_gas(2000000)]
 fn test_transfer_from__should_transfer_when_() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(OWNER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -165,7 +165,7 @@ fn test_transfer_from__should_transfer_when_() {
 #[available_gas(2000000)]
 fn test_transfer_from__should_transfer_when_caller_is_approved() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
@@ -193,7 +193,7 @@ fn test_transfer_from__should_transfer_when_caller_is_approved() {
 #[available_gas(2000000)]
 fn test_transfer_from__should_transfer_when_caller_is_approved_for_all() {
     // Given
-    deploy_erc721();
+    deploy_erc721(1);
     set_caller_address(CALLER);
     set_token_owner(OWNER, TOKEN_ID);
 
