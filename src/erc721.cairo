@@ -4,7 +4,7 @@ use starknet::ContractAddress;
 
 #[abi]
 trait IERC20 {
-    fn transferFrom(sender: ContractAddress, recipient: ContractAddress, amount: u256);
+    fn transfer_from(sender: ContractAddress, recipient: ContractAddress, amount: u256);
 }
 
 #[contract]
@@ -201,15 +201,12 @@ mod ERC721 {
     }
 
     fn transfer_mint_fee() {
-        return ();
-    // Uncomment to enable minting fee
-    // let eth_address = erc721_eth_address::read();
-    // let amount: u256 = MINT_PRICE.into();
-    // let caller = starknet::get_caller_address();
-    // let contract_owner = erc721_contract_owner::read();
-    // IERC20Dispatcher {
-    //     contract_address: eth_address
-    // }.transferFrom(caller, contract_owner, amount);
+        let eth_address = erc721_eth_address::read();
+        let caller = starknet::get_caller_address();
+        let contract_owner = erc721_contract_owner::read();
+        IERC20Dispatcher {
+            contract_address: eth_address
+        }.transfer_from(caller, contract_owner, MINT_PRICE);
     }
 
     fn set_token_metadata(token_id: u256) {
