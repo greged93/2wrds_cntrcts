@@ -16,3 +16,5 @@ const BIG: felt252 = 0x12345;
 const TOKEN_ID: felt252 = 0x1;
 const OTHER_TOKEN_ID: felt252 = 0x2;
 const BALANCE: felt252 = 0x10;
+
+const TOKEN_URI: felt252 = 'https://example.com';

@@ -124,6 +124,16 @@ mod ERC721 {
         erc721_contract_owner::write(new_owner);
     }
 
+    fn set_token_uri(token_id: u256, new_uri: felt252) {
+        let caller = starknet::get_caller_address();
+        let contract_owner = erc721_contract_owner::read();
+
+        assert(caller == contract_owner, ErrorCodes::INCORRECT_OWNER);
+        assert(exists(token_id), ErrorCodes::TOKEN_NON_EXISTENT);
+
+        erc721_token_uri::write(token_id, new_uri);
+    }
+
     #[external]
     fn approve(to: ContractAddress, token_id: u256) {
         let caller = starknet::get_caller_address();
