@@ -114,6 +114,7 @@ mod ERC721 {
         erc721_token_uri::read(token_id)
     }
 
+    #[external]
     fn set_owner(new_owner: ContractAddress) {
         let caller = starknet::get_caller_address();
         let contract_owner = erc721_contract_owner::read();
@@ -124,6 +125,7 @@ mod ERC721 {
         erc721_contract_owner::write(new_owner);
     }
 
+    #[external]
     fn set_token_uri(token_id: u256, new_uri: felt252) {
         let caller = starknet::get_caller_address();
         let contract_owner = erc721_contract_owner::read();
@@ -205,6 +207,7 @@ mod ERC721 {
         Transfer(from, to, token_id);
     }
 
+    #[external]
     fn mint(to: ContractAddress) {
         assert(!to.is_zero(), ErrorCodes::ZERO_DESTINATION);
         let token_id = erc721_mint_id::read() + 1.into();
@@ -228,6 +231,9 @@ mod ERC721 {
             contract_address: eth_address
         }.transfer_from(caller, contract_owner, MINT_PRICE);
     }
+
+    #[external]
+    fn split(token_id: u256) {}
 
     fn set_token_metadata(token_id: u256) {
         let noun_adj = Randomizer::get_random_noun_adj();

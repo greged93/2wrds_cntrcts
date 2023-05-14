@@ -7,5 +7,6 @@ mod helpers;
 mod mint_test;
 mod owner_only_test;
 mod randomizer_test;
+mod split_combine_test;
 mod transfer_test;
 mod view_test;
