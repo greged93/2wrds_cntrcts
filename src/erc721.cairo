@@ -233,7 +233,11 @@ mod ERC721 {
     }
 
     #[external]
-    fn split(token_id: u256) {}
+    fn split(token_id: u256) {
+        let caller = starknet::get_caller_address();
+        let owner = owner_of(token_id);
+        assert(owner == caller, ErrorCodes::INCORRECT_OWNER);
+    }
 
     fn set_token_metadata(token_id: u256) {
         let noun_adj = Randomizer::get_random_noun_adj();

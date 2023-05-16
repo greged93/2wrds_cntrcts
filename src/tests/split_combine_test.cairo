@@ -35,11 +35,10 @@ fn test_split__should_panic_owner_not_from() {
     let token_id = TOKEN_ID.into();
     let caller = CALLER.try_into().unwrap();
     let owner = OWNER.try_into().unwrap();
-    let destination = OWNER.try_into().unwrap();
 
     ERC721::erc721_balances::write(owner, ONE.into());
     ERC721::erc721_balances::write(caller, ONE.into());
 
     // When
-    ERC721::_transfer(caller, destination, token_id);
+    ERC721::split(token_id);
 }
