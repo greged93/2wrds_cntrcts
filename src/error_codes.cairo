@@ -3,6 +3,7 @@ mod ErrorCodes {
     const TOKEN_NON_EXISTENT: felt252 = 'ERC721: nonexistent token';
     const TOKEN_ALREADY_MINTED: felt252 = 'ERC721: token already minted';
     const TOKEN_SUPPLY_EXCEEDED: felt252 = 'ERC721: reached max supply';
+    const TOKEN_ALREADY_SPLIT: felt252 = 'ERC721: token already split';
 
     // Account related errors
     const ZERO_CALLER: felt252 = 'ERC721: zero address caller';

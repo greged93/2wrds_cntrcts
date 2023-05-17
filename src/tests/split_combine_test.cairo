@@ -20,8 +20,10 @@ use two_words::tests::constants_test::OWNER;
 
 use two_words::tests::constants_test::ZERO;
 use two_words::tests::constants_test::ONE;
+use two_words::tests::constants_test::TWO;
 
 use two_words::tests::constants_test::TOKEN_ID;
+use two_words::tests::constants_test::TOKEN_ID_SPLIT;
 
 #[test]
 #[available_gas(2000000)]
@@ -34,10 +36,27 @@ fn test_split__should_panic_owner_not_from() {
 
     let token_id = TOKEN_ID.into();
     let caller = CALLER.try_into().unwrap();
-    let owner = OWNER.try_into().unwrap();
 
-    ERC721::erc721_balances::write(owner, ONE.into());
     ERC721::erc721_balances::write(caller, ONE.into());
+
+    // When
+    ERC721::split(token_id);
+}
+
+#[test]
+#[available_gas(2000000)]
+#[should_panic(expected: ('ERC721: token already split', ))]
+fn test_split__should_panic_token_already_split() {
+    // Given
+    deploy_erc721(1);
+    set_caller_address(CALLER);
+    set_token_owner(CALLER, TOKEN_ID);
+    set_token_owner(CALLER, TOKEN_ID_SPLIT);
+
+    let token_id = TOKEN_ID.into();
+    let caller = CALLER.try_into().unwrap();
+
+    ERC721::erc721_balances::write(caller, TWO.into());
 
     // When
     ERC721::split(token_id);

@@ -237,6 +237,10 @@ mod ERC721 {
         let caller = starknet::get_caller_address();
         let owner = owner_of(token_id);
         assert(owner == caller, ErrorCodes::INCORRECT_OWNER);
+
+        let supply = erc721_supply::read();
+        let split_token_id = token_id + supply;
+        assert(!exists(split_token_id), ErrorCodes::TOKEN_ALREADY_SPLIT);
     }
 
     fn set_token_metadata(token_id: u256) {

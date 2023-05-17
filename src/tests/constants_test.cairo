@@ -10,10 +10,12 @@ const OWNER: felt252 = 0x10;
 
 const ZERO: felt252 = 0x0;
 const ONE: felt252 = 0x1;
+const TWO: felt252 = 0x2;
 const TWENTY: felt252 = 0x14;
 const BIG: felt252 = 0x12345;
 
 const TOKEN_ID: felt252 = 0x1;
+const TOKEN_ID_SPLIT: felt252 = 0x1001;
 const OTHER_TOKEN_ID: felt252 = 0x2;
 const BALANCE: felt252 = 0x10;
 
