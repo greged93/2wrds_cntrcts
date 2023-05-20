@@ -25,6 +25,8 @@ use two_words::tests::constants_test::TWO;
 use two_words::tests::constants_test::TOKEN_ID;
 use two_words::tests::constants_test::TOKEN_ID_SPLIT;
 
+use two_words::types::NounAdj;
+
 #[test]
 #[available_gas(2000000)]
 #[should_panic(expected: ('ERC721: incorrect owner', ))]
@@ -60,4 +62,38 @@ fn test_split__should_panic_token_already_split() {
 
     // When
     ERC721::split(token_id);
+}
+
+#[test]
+#[available_gas(2000000)]
+fn test_split__should_split_token() {
+    // Given
+    deploy_erc721(1);
+    set_caller_address(CALLER);
+    set_token_owner(CALLER, TOKEN_ID);
+
+    let token_id = TOKEN_ID.into();
+    let token_id_split = TOKEN_ID_SPLIT.into();
+    let caller = CALLER.try_into().unwrap();
+
+    ERC721::erc721_balances::write(caller, ONE.into());
+    ERC721::erc721_token_metadata::write(token_id, NounAdj { noun: 'Valley', adj: 'Sublime' });
+
+    // When
+    ERC721::split(token_id);
+
+    // Then
+    let new_balance = ERC721::erc721_balances::read(caller);
+    let metadata_token_one = ERC721::erc721_token_metadata::read(token_id);
+    let metadata_token_two = ERC721::erc721_token_metadata::read(token_id_split);
+    let owner_token_one = ERC721::erc721_owners::read(token_id);
+    let owner_token_two = ERC721::erc721_owners::read(token_id_split);
+
+    assert_eq(new_balance, TWO.into(), 'expected new balance to be 2');
+    assert_eq(metadata_token_one.noun, 'Valley', 'expected noun to be Valley');
+    assert_eq(metadata_token_one.adj, 0, 'expected adj to be 0');
+    assert_eq(metadata_token_two.noun, 0, 'expected noun to be 0');
+    assert_eq(metadata_token_two.adj, 'Sublime', 'expected adj to be Sublime');
+    assert_eq(owner_token_one, caller, 'expected owner to be caller');
+    assert_eq(owner_token_two, caller, 'expected owner to be caller');
 }

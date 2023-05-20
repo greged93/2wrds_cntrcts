@@ -1,5 +1,3 @@
-use two_words::types::NounAdj;
-
 use starknet::ContractAddress;
 
 #[abi]
@@ -241,6 +239,15 @@ mod ERC721 {
         let supply = erc721_supply::read();
         let split_token_id = token_id + supply;
         assert(!exists(split_token_id), ErrorCodes::TOKEN_ALREADY_SPLIT);
+
+        let metadata = erc721_token_metadata::read(token_id);
+        let noun = NounAdj { noun: metadata.noun, adj: 0 };
+        let adj = NounAdj { noun: 0, adj: metadata.adj };
+        erc721_token_metadata::write(token_id, noun);
+        erc721_token_metadata::write(split_token_id, adj);
+
+        erc721_owners::write(split_token_id, owner);
+        erc721_balances::write(caller, erc721_balances::read(caller) + 1.into());
     }
 
     fn set_token_metadata(token_id: u256) {
